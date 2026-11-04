@@ -1,0 +1,37 @@
+# Name of the workflow - shown in the "Actions" tab on GitHub
+name: Python CI
+
+# WHEN should the workflow run? (the trigger)
+on:
+  push:
+    branches:
+      - main          # run on every push to main
+  pull_request:
+    branches:
+      - main          # run on every pull request aimed at main
+
+# WHAT should the workflow do?
+jobs:
+  test:                         # name of our only job
+    runs-on: ubuntu-latest      # a fresh Linux machine given by GitHub
+    steps:                      # ordered list of steps
+
+      # Step 1: download your repository code onto the machine
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      # Step 2: install Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # Step 3: install packages from requirements.txt (pytest)
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Step 4: run all tests; if any test fails, the run turns red
+      - name: Run tests
+        run: pytest
